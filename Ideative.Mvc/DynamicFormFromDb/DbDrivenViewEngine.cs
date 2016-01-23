@@ -1,0 +1,44 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Web.Mvc;
+
+namespace Ideative.Mvc
+{
+    public class DbDrivenViewEngine : IViewEngine
+    {
+        public ViewEngineResult FindPartialView(ControllerContext controllerContext, string partialViewName, bool useCache)
+        {
+            if (controllerContext.RouteData.Values.ContainsValue("Dynamic"))
+            {
+                return new ViewEngineResult(new DbDrivenView(partialViewName), this);
+            }
+            else
+            {
+                return new ViewEngineResult(new string[]
+                { "No Suitable view found for 'DbDataViewEngine', please ensure View Name contains 'Dynamic'" });
+            }
+        }
+
+        public ViewEngineResult FindView(ControllerContext controllerContext, string viewName, string masterName, bool useCache)
+        {
+            if (controllerContext.RouteData.Values.ContainsValue("Dynamic"))
+            {
+                return new ViewEngineResult(new DbDrivenView(viewName), this);
+            }
+            else
+            {
+                return new ViewEngineResult(new string[]
+                { @"No Suitable view found for 'DbDataViewEngine', 
+                please ensure View Name contains 'Dynamic'" });
+            }
+        }
+
+        public void ReleaseView(ControllerContext controllerContext, IView view)
+        {
+
+        }
+    }
+}
