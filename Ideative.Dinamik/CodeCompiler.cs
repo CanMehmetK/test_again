@@ -130,7 +130,7 @@ namespace Ideative.Dinamik
                 });
         }
 
-        public static void CodeActionsInvoker(string className, string actionCode)
+        public static Assembly CodeActionsInvoker(string className, string actionCode)
         {
             StringBuilder stringBuilderSystem = new StringBuilder();
             StringBuilder stringBuilderCode = new StringBuilder();
@@ -149,7 +149,7 @@ namespace Ideative.Dinamik
             satirNo++;
             // #3 Class Def.
             //stringBuilderCode.AppendFormat("public static class {0}_{1}_Class {{", className,"" );
-            stringBuilderCode.AppendFormat("public static class {0} {{", className, "");
+            stringBuilderCode.AppendFormat("public class {0} {{", className, "");
             stringBuilderCode.Append("\r\n");
             satirNo++;
             // #3 Debug Def.
@@ -166,6 +166,7 @@ namespace Ideative.Dinamik
                 }))
             {
                 CompilerParameters compilerParameter = new CompilerParameters();
+                compilerParameter.
                 if (!CodeCompiler.DebugMode)
                 {
                     compilerParameter.GenerateInMemory = true;
@@ -203,7 +204,9 @@ namespace Ideative.Dinamik
                 if (stringBuilderSystem.Length <= 0)
                 {
                     Assembly compiledAssembly = compilerResult.CompiledAssembly;
-                    var compilledType = compiledAssembly.GetType("Ideative.Dinamik.myClass");// string.Format("{0}.{1}",Namespace,className));
+
+                    return compiledAssembly;
+                    var compilledType = compiledAssembly.GetType("Ideative.Web.Models.Model1");// string.Format("{0}.{1}",Namespace,className));
 
                     //MethodInfo[] methods = compilledType.GetMethods(BindingFlags.Static | BindingFlags.Public);
                     //methods[0].Invoke(null, null);
@@ -215,8 +218,48 @@ namespace Ideative.Dinamik
                     //var obj = Activator.CreateInstance(compilledType);
                     new myCodeActionsInvoker().AddCompilledType(compiledAssembly.GetTypes().First<Type>());
                 }
+                return null;
             }
         }
     }
-}
 
+
+    public class rosalynCompiler {
+        public static Assembly Compile(string[] sources, bool isDebug, string tempDir, params AssemblyName[] referencedAssemblies)
+        {
+            var assemblyFileName = tempDir + "gen" + Guid.NewGuid().ToString().Replace("-", "") + ".dll";
+            var assemblyPath = Path.GetFullPath(assemblyFileName);
+            
+            var compilation = Compilation.Create(assemblyFileName,
+                                                    new CompilationOptions(OutputKind.DynamicallyLinkedLibrary))
+                                            .AddSyntaxTrees(from source in sources
+                                                            select SyntaxTree.ParseCompilationUnit(source))
+                                            .AddReferences(from ass in referencedAssemblies
+                                                           select new AssemblyFileReference(new Uri(ass.CodeBase).LocalPath))
+                                            //select new AssemblyObjectReference(Assembly.Load(ass)))
+                                            .AddReferences(from ass in new[]
+                                                        {
+                                                    "System",
+                                                    "System.Core",
+                                                    "mscorlib"
+                                                        }
+                                                           select new AssemblyNameReference(ass));
+
+            EmitResult emitResult;
+
+            //using (var stream = new MemoryStream())
+            using (var stream = new FileStream(assemblyPath, FileMode.Create, FileAccess.Write))
+            {
+                emitResult = compilation.Emit(stream);
+            }
+
+            if (!emitResult.Success)
+            {
+                var message = string.Join("\r\n", emitResult.Diagnostics);
+                throw new ApplicationException(message);
+            }
+
+            return Assembly.LoadFile(assemblyPath);
+        }
+    }
+}
