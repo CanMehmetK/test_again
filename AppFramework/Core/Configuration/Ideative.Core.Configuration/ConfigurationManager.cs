@@ -10,6 +10,8 @@ namespace Ideative.Core.Configuration
     // https://github.com/tmsmith/Dapper-Extensions
     // https://github.com/twistedtwig/CustomConfigurations
     // http://www.codeproject.com/Articles/576286/MVC-Basic-Site-Step-3-Dynamic-Layouts-and-Site-Adm
+    // https://mhusseini.wordpress.com/2013/02/17/in-memory-run-time-code-generation-pt3/
+
     public class ConfigurationManager<T> : IConfiguration<T> where T : ConfigurationSectionHandler
     {
         public T Settings { get; set; } //<- Private Set for only access for updatevalues
