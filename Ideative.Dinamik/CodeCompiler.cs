@@ -2,6 +2,7 @@
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -166,7 +167,7 @@ namespace Ideative.Dinamik
                 }))
             {
                 CompilerParameters compilerParameter = new CompilerParameters();
-                compilerParameter.
+                compilerParameter.OutputAssembly = "__" + Namespace;
                 if (!CodeCompiler.DebugMode)
                 {
                     compilerParameter.GenerateInMemory = true;
@@ -223,43 +224,45 @@ namespace Ideative.Dinamik
         }
     }
 
+    //public class rosalynCompiler
+    //{
+    //    public static Assembly Compile(string[] sources, bool isDebug, string tempDir, params AssemblyName[] referencedAssemblies)
+    //    {
+    //        var assemblyFileName = tempDir + "gen" + Guid.NewGuid().ToString().Replace("-", "") + ".dll";
+    //        var assemblyPath = Path.GetFullPath(assemblyFileName);
 
-    public class rosalynCompiler {
-        public static Assembly Compile(string[] sources, bool isDebug, string tempDir, params AssemblyName[] referencedAssemblies)
-        {
-            var assemblyFileName = tempDir + "gen" + Guid.NewGuid().ToString().Replace("-", "") + ".dll";
-            var assemblyPath = Path.GetFullPath(assemblyFileName);
-            
-            var compilation = Compilation.Create(assemblyFileName,
-                                                    new CompilationOptions(OutputKind.DynamicallyLinkedLibrary))
-                                            .AddSyntaxTrees(from source in sources
-                                                            select SyntaxTree.ParseCompilationUnit(source))
-                                            .AddReferences(from ass in referencedAssemblies
-                                                           select new AssemblyFileReference(new Uri(ass.CodeBase).LocalPath))
-                                            //select new AssemblyObjectReference(Assembly.Load(ass)))
-                                            .AddReferences(from ass in new[]
-                                                        {
-                                                    "System",
-                                                    "System.Core",
-                                                    "mscorlib"
-                                                        }
-                                                           select new AssemblyNameReference(ass));
+    //        var compilation = Compilation.Create(
+    //            assemblyFileName,
+    //            new CompilationOptions(OutputKind.DynamicallyLinkedLibrary))
+    //            .AddSyntaxTrees(from source in sources
+    //                            select SyntaxTree.ParseCompilationUnit(source))
+    //                            .AddReferences(from ass in referencedAssemblies
+    //                                           select new AssemblyFileReference(new Uri(ass.CodeBase).LocalPath))
+    //                                           //select new AssemblyObjectReference(Assembly.Load(ass)))
+    //                                           .AddReferences(from ass in new[]
+    //                                           {
+    //                                               "System",
+    //                                               "System.Core",
+    //                                               "mscorlib"
+    //                                           }
+    //                                                          select new AssemblyNameReference(ass));
 
-            EmitResult emitResult;
+    //        EmitResult emitResult;
 
-            //using (var stream = new MemoryStream())
-            using (var stream = new FileStream(assemblyPath, FileMode.Create, FileAccess.Write))
-            {
-                emitResult = compilation.Emit(stream);
-            }
+    //        //using (var stream = new MemoryStream())
+    //        using (var stream = new FileStream(assemblyPath, FileMode.Create, FileAccess.Write))
+    //        {
+    //            emitResult = compilation.Emit(stream);
+    //        }
 
-            if (!emitResult.Success)
-            {
-                var message = string.Join("\r\n", emitResult.Diagnostics);
-                throw new ApplicationException(message);
-            }
+    //        if (!emitResult.Success)
+    //        {
+    //            var message = string.Join("\r\n", emitResult.Diagnostics);
+    //            throw new ApplicationException(message);
+    //        }
 
-            return Assembly.LoadFile(assemblyPath);
-        }
-    }
+    //        return Assembly.LoadFile(assemblyPath);
+    //    }
+    //}
+
 }
