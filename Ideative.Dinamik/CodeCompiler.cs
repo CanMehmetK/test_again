@@ -131,8 +131,9 @@ namespace Ideative.Dinamik
                 });
         }
 
-        public static Assembly CodeActionsInvoker(string className, string actionCode)
+        public static Assembly CodeActionsInvoker(dynamicModel model)
         {
+            Namespace = model.modelNameSpace;
             StringBuilder stringBuilderSystem = new StringBuilder();
             StringBuilder stringBuilderCode = new StringBuilder();
             int satirNo = 0;
@@ -150,15 +151,15 @@ namespace Ideative.Dinamik
             satirNo++;
             // #3 Class Def.
             //stringBuilderCode.AppendFormat("public static class {0}_{1}_Class {{", className,"" );
-            stringBuilderCode.AppendFormat("public class {0} {{", className, "");
+            stringBuilderCode.AppendFormat("public class {0} {{", model.modelName, "");
             stringBuilderCode.Append("\r\n");
             satirNo++;
             // #3 Debug Def.
             if (CodeCompiler.DebugMode)
             {
-                actionCode = actionCode.Replace("/*break*/", "System.Diagnostics.Debugger.Break();");
+                model.modelCode = model.modelCode.Replace("/*break*/", "System.Diagnostics.Debugger.Break();");
             }
-            stringBuilderCode.Append(actionCode);
+            stringBuilderCode.Append(model.modelCode);
             stringBuilderCode.Append("}");
             stringBuilderCode.Append("\r\n}");
             using (CSharpCodeProvider cSharpCodeProvider = new CSharpCodeProvider(new Dictionary<string, string>()

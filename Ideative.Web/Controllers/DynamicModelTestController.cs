@@ -13,9 +13,13 @@ namespace Ideative.Web.Controllers
         public ActionResult Index()
         {
 
-            var type = Type.GetType("Ideative.Web.Models.Model1");
+            var type =
+                AppDomain.CurrentDomain.GetAssemblies().Where(
+                    assx => assx.GetName().Name == "__Ideative.Web")
+                    .First()
+                    .GetType("Ideative.Web.Models.Model1");
 
-            type = AppDomain.CurrentDomain.GetAssemblies().Where(assx => assx.GetName().Name == "__Ideative.Web").First().GetType("Ideative.Web.Models.Model1");
+            
 
             var model = Activator.CreateInstance(type);
             //Name = "Model1"       "Ideative.Web.Models.Model1"}

@@ -24,7 +24,7 @@ namespace IdeativeWinForm
             string strCode = textBox1.Text;
 
             Ideative.Dinamik.CodeCompiler.DebugMode = false;
-            Ideative.Dinamik.CodeCompiler.CodeActionsInvoker(txtMyClass.Text, strCode);
+            //Ideative.Dinamik.CodeCompiler.CodeActionsInvoker(txtMyClass.Text, strCode);
             myClass.Execute();
 
         }

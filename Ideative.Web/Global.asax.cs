@@ -1,4 +1,5 @@
-﻿using Ideative.Mvc;
+﻿using Ideative.Dinamik;
+using Ideative.Mvc;
 using ServiceLocation;
 using System;
 using System.Collections.Generic;
@@ -22,36 +23,59 @@ namespace Ideative.Web
         {
             assemblies = new Dictionary<string, Assembly>();
             AppDomain.CurrentDomain.AssemblyLoad += CurrentDomain_AssemblyLoad;
+            AppDomain.CurrentDomain.TypeResolve += CurrentDomain_TypeResolve;
+        }
+
+        private static Assembly CurrentDomain_TypeResolve(object sender, ResolveEventArgs args)
+        {
+            throw new NotImplementedException();
         }
 
         private static void CurrentDomain_AssemblyLoad(object sender, AssemblyLoadEventArgs args)
         {
-            
+
             //AppDomain.CurrentDomain.GetAssemblies()[85].GetName().Name
             //if(args.LoadedAssembly.GetName().)
-            Debug.WriteLine(args.LoadedAssembly.GetName());
-            Debug.WriteLine(sender.ToString());
-            AppDomain.CurrentDomain.Load(args.LoadedAssembly.GetName());
-            var assbly = AppDomain.CurrentDomain.GetAssemblies().Where(ass => ass.GetName().Name == args.LoadedAssembly.GetName().Name);
+            if (args.LoadedAssembly.GetName().ToString().StartsWith("__Ideative"))
+            {
+                Debug.WriteLine(args.LoadedAssembly.GetName() + " ekleniyor");
+                Debug.WriteLine(sender.ToString());
+                AppDomain.CurrentDomain.Load(args.LoadedAssembly.GetName());
+                var assbly = AppDomain.CurrentDomain.GetAssemblies().Where(ass => ass.GetName().Name == args.LoadedAssembly.GetName().Name);
+            }
         }
     }
+
+
+
+
 
     public class MvcApplication : System.Web.HttpApplication
     {
         protected void Application_Start()
         {
+
+            #region View Engine
+            //var engine = new 
+            //ViewEngines.Engines.Clear();
+            //ViewEngines.Engines.Add(engine);
+            #endregion
+
+            #region Dynamic Compile
             AsseblyLocator.Init();
-            string strCode = @"    public string ad { get; set; }";
-            Ideative.Dinamik.CodeCompiler.Namespace = "Ideative.Web.Models";
             Ideative.Dinamik.CodeCompiler.DebugMode = false;
-            Assembly a = Ideative.Dinamik.CodeCompiler.CodeActionsInvoker("Model1", strCode);
-            //AppDomain.CurrentDomain.Load(a.GetName().Name);
+            var newdynamicModel = new dynamicModel();
+            newdynamicModel.modelName = "Model1";
+            newdynamicModel.modelCode = @"    public string ad { get; set; }";
+
+            Assembly a = Ideative.Dinamik.CodeCompiler.CodeActionsInvoker(newdynamicModel);
             Debug.WriteLine(" Name : " + a.GetName().Name);
             Debug.WriteLine(" NamF : " + a.GetName());
             Debug.WriteLine(" NamF : " + a.FullName);
+            #endregion
 
             AreaRegistration.RegisterAllAreas();
-            
+
             HostingEnvironment.RegisterVirtualPathProvider(new ViewPathProvider());
 
             GlobalConfiguration.Configure(WebApiConfig.Register);

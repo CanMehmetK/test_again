@@ -64,6 +64,7 @@
     <Compile Include="DynamicView\ViewCacheDependencyManager.cs" />
     <Compile Include="DynamicView\ViewFile.cs" />
     <Compile Include="DynamicView\ViewPathProvider.cs" />
+    <Compile Include="HtmlHelpers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

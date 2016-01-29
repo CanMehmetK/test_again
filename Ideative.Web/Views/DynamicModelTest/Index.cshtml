@@ -1,9 +1,14 @@
 ﻿@using Ideative.Web.Models
-@model dynamic
+@model  Model1
 @{
     ViewBag.Title = "Index";
+    var model = Model;
 }
 
 <h2>Index</h2>
-
 @Model.ad
+
+
+@IdeativeHtmlHelpers.DynamicEditorFor(this.Html,Model,"ad")
+@*@Html.DynamicTextBoxFor(dynamic => Model.ad)*@
+
