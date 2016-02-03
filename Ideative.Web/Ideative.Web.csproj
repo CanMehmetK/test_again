@@ -269,6 +269,10 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AppFramework\Common\Ideative.Core.Common.MVC\Ideative.Core.Common.MVC.csproj">
+      <Project>{ee989c2d-bb92-4530-850a-995a2f2b43fa}</Project>
+      <Name>Ideative.Core.Common.MVC</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Ideative.Core\Ideative.Core.csproj">
       <Project>{bcd66973-189b-4c83-8a95-5cc8ce1334f6}</Project>
       <Name>Ideative.Core</Name>

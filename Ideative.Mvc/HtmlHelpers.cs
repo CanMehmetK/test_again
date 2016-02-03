@@ -9,13 +9,11 @@ namespace System.Web.Mvc
 {
     public static partial class IdeativeHtmlHelpers
     {
-        public static MvcHtmlString DynamicEditorFor(this HtmlHelper htmlHelper,
-                   dynamic instance,string ad)
+        public static MvcHtmlString DynamicEditorFor(this HtmlHelper htmlHelper, dynamic instance, string ad)
         {
             var tType = instance.GetType();
             var prop = (instance.GetType()).GetProperty(ad);
-            
-            return new MvcHtmlString(@"<input type=""text"" value='"+prop.GetValue(instance)+"'></input>");
+            return new MvcHtmlString(@"<input type=""text"" value='" + prop.GetValue(instance) + "'></input>");
         }
     }
 }
